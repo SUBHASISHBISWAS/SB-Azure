@@ -18,6 +18,7 @@ namespace TodoAzureFunctionApp
     {
         private const string Route = "todo";
         private const string TableName = "todos";
+        private const string QueueName = "todos";
         private const string PartitionKey = "TODO";
 
 
@@ -106,6 +107,7 @@ namespace TodoAzureFunctionApp
         public static async Task<IActionResult> CreateTodo(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = Route)] HttpRequest req,
             [Table(TableName, Connection = "AzureWebJobsStorage")] IAsyncCollector<TodoTableEntity> todoTable,
+            [Queue(QueueName, Connection = "AzureWebJobsStorage")] IAsyncCollector<Todo> todoQueue,
             ILogger log)
         {
             log.LogInformation("Creating a new todo list Item");
@@ -117,6 +119,7 @@ namespace TodoAzureFunctionApp
 
             var todo = new Todo() { TaskDescription = input.TaskDescription };
             await todoTable.AddAsync(todo.ToTableEntity());
+            await todoQueue.AddAsync(todo);
 
             return new OkObjectResult(todo);
         }
