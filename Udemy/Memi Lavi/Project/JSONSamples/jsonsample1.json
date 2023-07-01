@@ -1,0 +1,18 @@
+{
+    "orderId": "54",
+    "orderDate": "01/09/2020 17:34:02",
+    "total": 98.97,
+    "priority": 2,
+    "items": [
+        {
+            "name": "Harry Potter",
+            "id": "443",
+            "price": 55
+        },
+        {
+            "name": "Exhalation",
+            "id": "87",
+            "price": 43.97
+        }
+    ]
+}
