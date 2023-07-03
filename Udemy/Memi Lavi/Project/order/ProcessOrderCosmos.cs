@@ -16,14 +16,16 @@ namespace AzureCourse.Function
         [FunctionName("ProcessOrderCosmos")]
         public static void Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
-            //[CosmosDB(databaseName: "readit-orders", collectionName: "orders", ConnectionStringSetting = "CosmosDBConnection")]out Order order,
+            [CosmosDB(databaseName: "readit-orders", collectionName: "Orders", 
+            ConnectionStringSetting = "CosmosDBConnection")]out Order order,
             ILogger log)
         {
             string requestBody = new StreamReader(req.Body).ReadToEndAsync().Result;
 
             log.LogInformation($"Order JSON: {requestBody}");
 
-            //order = JsonSerializer.Deserialize<Order>(requestBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            order = JsonSerializer.Deserialize<Order>(requestBody, 
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
     }
 }
