@@ -40,9 +40,9 @@ namespace catalog.Pages
             
             // UNCOMMENT AFTER ADDING REDIS
             //Get data about the shopping cart
-            //var client = GetRedisClient();
-            //var cartItems = client.GetListCount("cart");
-            //ViewData["cartNo"] = cartItems;
+            var client = GetRedisClient();
+            var cartItems = client.GetListCount("cart");
+            ViewData["cartNo"] = cartItems;
 
             ViewData["books"] = books;
             
@@ -51,17 +51,17 @@ namespace catalog.Pages
         public IActionResult OnPostAddToShoppingCart()
         {
             // UNCOMMECT AFTER ADDING REDIS
-            // var client = GetRedisClient();
-            // var bookId = int.Parse(Request.Form["bookId"]);
+            var client = GetRedisClient();
+            var bookId = int.Parse(Request.Form["bookId"]);
                 
-            // if (!client.GetAllItemsFromList("cart").Contains(bookId.ToString()))
-            // {
-            //     var book = _context.Books.Find(bookId);
-            //     book.InStock--;
-            //     _context.SaveChanges();
+            if (!client.GetAllItemsFromList("cart").Contains(bookId.ToString()))
+            {
+                 var book = _context.Books.Find(bookId);
+                 book.InStock--;
+                 _context.SaveChanges();
             
-            //     client.AddItemToList("cart", bookId.ToString());
-            // }
+                 client.AddItemToList("cart", bookId.ToString());
+             }
 
             return RedirectToPage();
         }
