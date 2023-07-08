@@ -2,6 +2,7 @@
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "AzureWebJobsStorage":"<Azure Function Storage ConnectionString>",
     "CosmosDBConnection": "<Cosmos connection string>",
     "StorageConnectionString": "<Storage connection string>"
   }
