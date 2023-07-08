@@ -5,9 +5,12 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System;
 using System.IO;
-using System.Text.Json;
-
 using System.Collections.Generic;
+using Microsoft.Azure.WebJobs.Extensions.EventGrid;
+using Microsoft.Azure.Storage.Blob;
+using Azure.Messaging.EventGrid;
+using Azure.Messaging.EventGrid.SystemEvents;
+using System.Text.Json;
 
 namespace AzureCourse.Function
 {
@@ -15,17 +18,48 @@ namespace AzureCourse.Function
     {
         [FunctionName("ProcessOrderCosmos")]
         public static void Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
-            [CosmosDB(databaseName: "readit-orders", collectionName: "Orders", 
-            ConnectionStringSetting = "CosmosDBConnection")]out Order order,
+            [EventGridTrigger] EventGridEvent eventGridEvent,
+            [Blob("neworders", FileAccess.Write, Connection = "StorageConnectionString")] CloudBlobContainer container,
+            [CosmosDB(databaseName: "readit-orders", collectionName: "orders", 
+                ConnectionStringSetting = "CosmosDBConnection")] out Order order,
             ILogger log)
         {
-            string requestBody = new StreamReader(req.Body).ReadToEndAsync().Result;
+            order = null;
 
-            log.LogInformation($"Order JSON: {requestBody}");
+            try
+            {
+                log.LogInformation("Function started");
+                log.LogInformation($"Event details: Topic: {eventGridEvent.Topic}");
+                log.LogInformation($"Event data: {eventGridEvent.Data.ToString()}");
 
-            order = JsonSerializer.Deserialize<Order>(requestBody, 
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                string eventBody = eventGridEvent.Data.ToString();
+
+                log.LogInformation("Deserializing to StorageBlobCreatedEventData...");
+                var storageData = JsonSerializer.Deserialize<StorageBlobCreatedEventData>(eventBody, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                log.LogInformation("Done");
+
+                log.LogInformation("Get the name of the new blob...");
+                var blobName = Path.GetFileName(storageData.Url);
+                log.LogInformation($"Name of file: {blobName}");
+
+                log.LogInformation("Get blob from storage...");
+                var blockBlob = container.GetBlockBlobReference(blobName);
+                var orderText = blockBlob.DownloadText();
+                log.LogInformation("Done");
+                log.LogInformation($"Order text: {orderText}");
+
+                order = JsonSerializer.Deserialize<Order>(orderText, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            catch (Exception ex)
+            {
+                log.LogError(ex, "Error in function");
+            }
         }
     }
 }
