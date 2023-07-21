@@ -20,7 +20,10 @@ namespace catalog
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>().ConfigureAppConfiguration((ctx,builder)=>{
+                        var config=builder.Build();
+                        builder.AddAzureKeyVault(config["KeyVault:BaseUrl"]);
+                    });
                 });
     }
 }
