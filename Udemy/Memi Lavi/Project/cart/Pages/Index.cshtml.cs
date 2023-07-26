@@ -34,7 +34,7 @@ namespace cart.Pages
             List<Book> books=new List<Book>();
 
             // UNCOMMENT AFTER WE HAVE A DATABASE  
-            //books=GetBooksInShoppingCart();
+            books=GetBooksInShoppingCart();
 
             ViewData["books"]=books;
         }
