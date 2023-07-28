@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using cart.Data;
 using cart.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ServiceStack.Redis;
+
 
 namespace cart.Pages
 {
@@ -57,7 +61,6 @@ namespace cart.Pages
             var order=new Order();
             double total=0;
             order.orderDate=DateTime.Now;
-            order.priority=1;
             order.items=new List<OrderItem>();
 
             foreach (var book in booksInCart)  {
@@ -76,17 +79,23 @@ namespace cart.Pages
             Console.WriteLine(json);
 
             try  {
-            var client=new HttpClient();
-            var result=client.PostAsync(_config.GetValue<String>("OrderFunctionUrl"),new StringContent(json)).Result;
-                     
-            Console.WriteLine("Order sent, status:" + result);
+                string storageConnection = _config.GetValue<String>("StorageConnectionString"); 
+                var blobService=new BlobServiceClient(storageConnection);
+                var container=blobService.GetBlobContainerClient("neworders");
+                var blobClient=container.GetBlobClient($"order_{Guid.NewGuid().ToString()}.json");
+                
+                // Prepare stream for upload
+                byte[] byteArray=Encoding.ASCII.GetBytes(json);
+                MemoryStream stream=new MemoryStream(byteArray);
+                
+                var resp=blobClient.Upload(stream); 
 
-            if (result.StatusCode==System.Net.HttpStatusCode.NoContent)  {
-                ClearCart();
-            }
+                Console.WriteLine("Order sent!");
 
-            ViewData["books"]=new List<Book>();
-            ViewData["OrderStatus"]="sent";
+                ClearCart();                
+
+                ViewData["books"]=new List<Book>();
+                ViewData["OrderStatus"]="sent";
             }
             catch (Exception ex)  {
                 ViewData["OrderStatus"]="Error sending order: " + ex.Message;
