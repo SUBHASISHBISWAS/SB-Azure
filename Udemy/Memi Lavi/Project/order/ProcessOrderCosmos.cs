@@ -20,7 +20,7 @@ namespace AzureCourse.Function
         public static void Run(
             [EventGridTrigger] EventGridEvent eventGridEvent,
             [Blob("neworders", FileAccess.Write, Connection = "StorageConnectionString")] CloudBlobContainer container,
-            [CosmosDB(databaseName: "readit-orders", collectionName: "orders", 
+            [CosmosDB(databaseName: "readit-orders", collectionName: "Orders", 
                 ConnectionStringSetting = "CosmosDBConnection")] out Order order,
             ILogger log)
         {
