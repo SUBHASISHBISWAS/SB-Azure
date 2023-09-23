@@ -1,0 +1,8 @@
+{
+    "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "connectionString": "Endpoint=sb://app-namespace1000.servicebus.windows.net/;SharedAccessKeyName=orderpolicy;SharedAccessKey=wvYsvADn1F1U5efHeJwWhBrDWSqB3Za5hudzCnTyTX4="
+  }
+}
