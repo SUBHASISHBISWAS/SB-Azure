@@ -1,0 +1,6 @@
+
+// copy data between two storage accounts
+
+azcopy copy "https://appstore40404.blob.core.windows.net/data?sv=2020-08-04&ss=b&srt=sco&sp=rl&se=2022-04-26T18:51:53Z&st=2022-04-26T10:51:53Z&spr=https&sig=85v11pHl5eijn5PuMCZMb%2FcBJbwh9n8aw%2BnvN3PJ08o%3D" "https://appstore50505.blob.core.windows.net/data?sv=2020-08-04&ss=b&srt=sco&sp=rwlac&se=2022-04-26T18:53:15Z&st=2022-04-26T10:53:15Z&spr=https&sig=NCV3gk3%2FNPzImNQtfJFYboGxFlXLQQncGx%2Bun3m045Y%3D" --recursive
+
+
