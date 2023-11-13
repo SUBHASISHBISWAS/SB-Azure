@@ -1,0 +1,42 @@
+{
+    "orderId":"O1",
+    "category":"Laptop",
+    "quantity":100,
+    "customer": {
+        "customerId":"C1",
+        "customerName":"CustomerA"
+    }
+}
+
+
+{
+    "orderId":"O2",
+    "category":"Mobiles",
+    "quantity":200,
+    "customer": {
+        "customerId":"C2",
+        "customerName":"CustomerB"
+    }
+}
+
+
+{
+    "orderId":"O3",
+    "category":"Desktop",
+    "quantity":75,
+    "customer": {
+        "customerId":"C1",
+        "customerName":"CustomerA"
+    }
+}
+
+
+{
+    "orderId":"O4",
+    "category":"Laptop",
+    "quantity":25,
+    "customer": {
+        "customerId":"C3",
+        "customerName":"CustomerC"
+    }
+}

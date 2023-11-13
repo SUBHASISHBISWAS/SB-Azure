@@ -1,0 +1,32 @@
+1) Use the following command to see the ordering of results
+
+SELECT * FROM c order by c.orderId,c.category
+
+2) Use the following subset when it comes to setting a composite index
+
+{
+    "indexingMode": "consistent",
+    "automatic": true,
+    "includedPaths": [
+        {
+            "path": "/*"
+        }
+    ],
+    "excludedPaths": [
+        {
+            "path": "/\"_etag\"/?"
+        }
+    ],
+"compositeIndexes":[  
+            [  
+                {  
+                    "path":"/orderId",
+                    "order":"ascending"
+                },
+                {  
+                    "path":"/category",
+                    "order":"ascending"
+                }
+            ]
+        ]
+}
